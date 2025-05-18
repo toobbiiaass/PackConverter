@@ -1,0 +1,63 @@
+{
+  "version": "1.21.4",
+    "UpperBodyArmor": {
+      "path": "/assets/minecraft/textures/entity/equipment/humanoid",
+      "humanoid": [
+        {"id": 1, "name": "chainmail.png"},
+        {"id": 2, "name": "diamond.png"},
+        {"id": 3, "name": "gold.png"},
+        {"id": 4, "name": "iron.png"},
+        {"id": 5, "name": "leather.png"},
+        {"id": 6, "name": "leather_overlay.png"},
+        {"id": 7, "name": "netherite.png"}
+      ]
+    },
+    "UnderBodyArmor": {
+      "path": "/assets/minecraft/textures/entity/equipment/humanoid_leggings",
+      "humanoid_leggings": [
+        {"id": 1, "name": "chainmail.png"},
+        {"id": 2, "name": "diamond.png"},
+        {"id": 3, "name": "gold.png"},
+        {"id": 4, "name": "iron.png"},
+        {"id": 5, "name": "leather.png"},
+        {"id": 6, "name": "leather_overlay.png"},
+        {"id": 7, "name": "netherite.png"}
+      ]
+    },
+    "Widgets": {
+      "path": "/assets/minecraft/textures/gui/sprites/hud",
+      "widgets": [
+        {"id": 1, "name": "hotbar.png", "x": 0, "y": 0, "xLength": 182, "yLength": 22},
+        {"id": 2, "name": "hotbar_selection.png", "x": 0, "y": 22, "xLength": 24, "yLength": 23}
+
+      ]
+    },
+    "Icons": {
+      "path": "/assets/minecraft/textures/gui/sprites/hud",
+      "icons": [
+        {"id": 1, "name": "crosshair.png", "x": 0, "y": 0, "xLength": 16, "yLength": 16},
+        {"id": 2, "name": "air.png", "x": 16, "y": 18, "xLength": 9, "yLength": 9},
+        {"id": 3, "name": "air_bursting.png", "x": 25, "y": 18, "xLength": 9, "yLength": 9},
+        {"id": 4, "name": "food_full.png", "x": 52, "y": 27, "xLength": 9, "yLength": 9},
+        {"id": 5, "name": "food_half.png", "x": 62, "y": 27, "xLength": 9, "yLength": 9},
+        {"id": 5, "name": "armor_empty.png", "x": 16, "y": 9, "xLength": 9, "yLength": 9},
+        {"id": 6, "name": "armor_half.png", "x": 25, "y": 9, "xLength": 9, "yLength": 9},
+        {"id": 7, "name": "armor_full.png", "x": 34, "y": 9, "xLength": 9, "yLength": 9},
+        {"id": 8, "name": "food_empty.png", "x": 16, "y": 27, "xLength": 9, "yLength": 9},
+        {"id": 9, "name": "food_empty_hunger.png", "x": 133, "y": 27, "xLength": 9, "yLength": 9},
+        {"id": 10, "name": "food_full_hunger.png", "x": 88, "y": 27, "xLength": 9, "yLength": 9},
+        {"id": 11, "name": "food_half_hunger.png", "x": 97, "y": 27, "xLength": 9, "yLength": 9},
+        {"id": 11, "name": "full.png;heart", "x": 52, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 12, "name": "half.png;heart", "x": 61, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 13, "name": "full_blinking.png;heart", "x": 70, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 14, "name": "half_blinking.png;heart", "x": 79, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 15, "name": "absorbing_full.png;heart", "x": 88, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 16, "name": "absorbing_half.png;heart", "x": 97, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 17, "name": "container_blinking.png;heart", "x": 25, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 18, "name": "container.png;heart", "x": 16, "y": 0, "xLength": 9, "yLength": 9},
+        {"id": 19, "name": "experience_bar_background.png", "x": 0, "y": 64, "xLength": 182, "yLength": 5},
+        {"id": 18, "name": "experience_bar_progress.png", "x": 0, "y": 69, "xLength": 182, "yLength": 5}
+      ]
+  }
+}
+

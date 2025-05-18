@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PackConverter:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PackConverter_jar</output-path>
+    <root id="archive" name="PackConverter.jar">
+      <element id="module-output" name="PackConverter" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/fusesource/jansi/jansi/2.4.0/jansi-2.4.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20210307/json-20210307.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
