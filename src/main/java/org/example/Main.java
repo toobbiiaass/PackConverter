@@ -202,6 +202,24 @@ public class Main {
         }
         moveDirc(new File(Paths.get(String.valueOf(oldPathBase),"textures","blocks").toUri()),new File(Paths.get(String.valueOf(newPathBase),"textures","block").toUri()));
         moveDirc(new File(Paths.get(String.valueOf(oldPathBase),"textures","items").toUri()),new File(Paths.get(String.valueOf(newPathBase),"textures","item").toUri()));
+
+        Path targetFolder = Paths.get(destinationFolder,"assets", "minecraft", "textures", "block");
+
+        copyFire("fire_0.png.mcmeta", targetFolder);
+        copyFire("fire_1.png.mcmeta", targetFolder);
+
+    }
+    private static void copyFire(String name, Path target){
+        Path imageToCopy = Paths.get(System.getProperty("user.dir")).resolve(name);
+        Path targetFile = target.resolve(name);
+
+        try {
+            Files.copy(imageToCopy, targetFile, StandardCopyOption.REPLACE_EXISTING);
+            printWorkedShit("copied fires mcmeta right");
+        } catch (Exception e) {
+            System.err.println("Error: Fire mcmeta");
+            e.printStackTrace();
+        }
     }
     private static void moveDirc(File oldPath, File newPath){
         if(oldPath.exists()){
@@ -404,6 +422,7 @@ public class Main {
             //1.8
             createAllFolders();
             moveDircs();
+
 
             refactorPF1ToPF5();
             createAllNetheriteItems();
