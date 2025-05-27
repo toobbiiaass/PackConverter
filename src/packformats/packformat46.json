@@ -39,7 +39,7 @@
         {"id": 2, "name": "air.png", "x": 16, "y": 18, "xLength": 9, "yLength": 9},
         {"id": 3, "name": "air_bursting.png", "x": 25, "y": 18, "xLength": 9, "yLength": 9},
         {"id": 4, "name": "food_full.png", "x": 52, "y": 27, "xLength": 9, "yLength": 9},
-        {"id": 5, "name": "food_half.png", "x": 62, "y": 27, "xLength": 9, "yLength": 9},
+        {"id": 5, "name": "food_half.png", "x": 61, "y": 27, "xLength": 9, "yLength": 9},
         {"id": 5, "name": "armor_empty.png", "x": 16, "y": 9, "xLength": 9, "yLength": 9},
         {"id": 6, "name": "armor_half.png", "x": 25, "y": 9, "xLength": 9, "yLength": 9},
         {"id": 7, "name": "armor_full.png", "x": 34, "y": 9, "xLength": 9, "yLength": 9},
