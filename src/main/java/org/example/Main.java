@@ -12,18 +12,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.nio.channels.FileChannel;
-import java.nio.file.StandardOpenOption;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.Charset;
-
-
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 public class Main {
@@ -31,21 +28,18 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
 
     private static String oldTpPath="";
-    private static String outputPathTP = "";
     private static String destinationFolder = "";
     private static String futurePackName ="";
     private static int packFormat =0;
     private static int futurePackFormat =0;
     private static boolean shouldNetheriteCreate = false;
     public static final String GREEN = "\u001B[32m";
+    public static final String DARK_RED = "\u001B[31m";
+
     public static final String PURPLE = "\u001B[35m";
     public static final String RESET = "\u001B[0m";
     public static final String BRIGHT_BLUE = "\u001B[94m";
     public static final String LIGHT_BLUE = "\u001B[94m";
-
-
-
-
     static String[] foldersInTextures = {"block","misc","item","models","particle"};
 
     public static void main(String[] args) {
@@ -54,11 +48,60 @@ public class Main {
         int packformat= userInput();
         createBasics();
         checkPackFormatAndStartConverting(packformat);
+
+        printBlues("This could take a moment...");
+        //zip the new pack and remove old temp folders
+        Path newFolderPath = Paths.get(oldTpPath, futurePackName);
+        try {
+            Path zipFilePath = Paths.get(oldTpPath, futurePackName + ".zip");
+            zipFolder(newFolderPath, zipFilePath);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
         printBlues("Pack was converted!");
         String doney= scanner.nextLine();
         System.out.println("done");
 
     }
+    public static void zipFolder(Path sourceFolderPath, Path zipPath) throws IOException {
+        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath))) {
+            Files.walk(sourceFolderPath)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        ZipEntry zipEntry = new ZipEntry(sourceFolderPath.relativize(path).toString().replace("\\", "/"));
+                        try {
+                            zos.putNextEntry(zipEntry);
+                            Files.copy(path, zos);
+                            zos.closeEntry();
+                        } catch (IOException e) {
+                            System.err.println(" Failed to zip file: " + path + " - " + e.getMessage());
+                        }
+                    });
+        }
+        printBlues("New Pack got zipped");
+        // Zippen ist fertig, jetzt Ordner löschen
+        deleteFolderRecursively(sourceFolderPath);
+        printBlues("Old Temp folder got deleted");
+    }
+
+    public static void deleteFolderRecursively(Path folder) throws IOException {
+        Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
     private static void userInformation(){
         AnsiConsole.systemInstall();
         System.out.println(LIGHT_BLUE +
@@ -102,11 +145,17 @@ public class Main {
 
     }
     private static int userInput(){
-        printBlues("Choose a path where the converted tp should be saved!");
-        outputPathTP = scanner.nextLine();
-
-        printBlues("\nSpecify the folder that should be converter!\nThe pack must be unpacked (directory which contains the pack.mcmeta file) \n...");
-        oldTpPath = scanner.nextLine();
+        Boolean loop = true;
+        while (loop){
+            printBlues("\nSpecify the folder that should be converter!\nThe pack must be unpacked (directory which contains the pack.mcmeta file) \n...");
+            String input = scanner.nextLine();
+            if (!input.matches("^[a-zA-Z0-9_./:\\\\-]+$") || input.isEmpty()) {
+                printRed("The path contains special characters or spaces. Please use a clean path.");
+            } else {
+                oldTpPath = input;
+                loop=false;
+            }
+        }
 
         packFormat = checkMetaFile();
         if(packFormat == -1){
@@ -133,7 +182,7 @@ public class Main {
             printBlues("Specify the name of the future tp:");
             futurePackName = scanner.nextLine();
 
-            Path newFolderPath = Paths.get(outputPathTP, futurePackName);
+            Path newFolderPath = Paths.get(oldTpPath, futurePackName);
             File newFolder = new File(newFolderPath.toUri());
 
             if(newFolder.exists()){
@@ -824,7 +873,11 @@ public class Main {
         multi = image.getWidth() / cutter;
         for (int i = 0; i < objList.size(); i++) {
             try {
-                BufferedImage background = ImageIO.read(new File("overlay" + multi * objList.get(i).getxLength()+"_" +multi * objList.get(i).getyLength()+ ".png"));
+                File checkFileIfExists = new File("overlay" + multi * objList.get(i).getxLength()+"_" +multi * objList.get(i).getyLength()+ ".png");
+                if(!checkFileIfExists.exists()){
+                    continue;
+                }
+                BufferedImage background = ImageIO.read(checkFileIfExists);
                 BufferedImage overlay = ImageIO.read(imageP);
                 BufferedImage result = new BufferedImage(background.getWidth(), background.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -907,5 +960,9 @@ public class Main {
     }
     private static void printBlues(String text){
         System.out.println(LIGHT_BLUE+text+RESET);
+    }
+
+    private static void printRed(String text){
+        System.out.println(DARK_RED+text+RESET);
     }
 }
