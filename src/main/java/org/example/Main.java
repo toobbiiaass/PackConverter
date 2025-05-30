@@ -110,7 +110,7 @@ public class Main {
         System.out.println("|                                             Minecraft Pack Converter                                            |");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------|");
         System.out.println("| BY:" + PURPLE + " vuacy" + LIGHT_BLUE + "                                                                                                       |");
-        System.out.println("| Version: 1.1                                                                                                    |");
+        System.out.println("| Version: 1.2                                                                                                    |");
         System.out.println("| Youtube Tutorial: "+PURPLE+"https://www.youtube.com/watch?v=J_RNlLS4k3w"+LIGHT_BLUE+"                                                   |");
         System.out.println("| Discord Server: " + PURPLE + "https://discord.gg/ExGSqUT6qk" + LIGHT_BLUE + "                                                                   |");
         System.out.println("|                                                                                                                 |");
@@ -827,9 +827,8 @@ public class Main {
         for (int i = 0; i < objList.size(); i++) {
             try {
 
-                BufferedImage background = ImageIO.read(new File("overlay" + multi * 8 +"_"+multi * 8+ ".png"));
                 BufferedImage overlay = ImageIO.read(imageP);
-                BufferedImage result = new BufferedImage(background.getWidth(), background.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                BufferedImage result = new BufferedImage(multi * 8, multi * 8, BufferedImage.TYPE_INT_ARGB);
 
                 int x1 = objList.get(i).getX() * multi;
                 int y1 = objList.get(i).getY() * multi;
@@ -873,13 +872,8 @@ public class Main {
         multi = image.getWidth() / cutter;
         for (int i = 0; i < objList.size(); i++) {
             try {
-                File checkFileIfExists = new File("overlay" + multi * objList.get(i).getxLength()+"_" +multi * objList.get(i).getyLength()+ ".png");
-                if(!checkFileIfExists.exists()){
-                    continue;
-                }
-                BufferedImage background = ImageIO.read(checkFileIfExists);
                 BufferedImage overlay = ImageIO.read(imageP);
-                BufferedImage result = new BufferedImage(background.getWidth(), background.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                BufferedImage result = new BufferedImage(multi * objList.get(i).getxLength(), multi * objList.get(i).getyLength(), BufferedImage.TYPE_INT_ARGB);
 
                 int x1 = objList.get(i).getX() * multi;
                 int y1 = objList.get(i).getY() * multi;
