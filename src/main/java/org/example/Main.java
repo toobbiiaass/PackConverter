@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -48,6 +49,8 @@ public class Main {
         int packformat= userInput();
         createBasics();
         checkPackFormatAndStartConverting(packformat);
+
+
 
         printBlues("This could take a moment...");
         //zip the new pack and remove old temp folders
@@ -110,7 +113,7 @@ public class Main {
         System.out.println("|                                             Minecraft Pack Converter                                            |");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------|");
         System.out.println("| BY:" + PURPLE + " vuacy" + LIGHT_BLUE + "                                                                                                       |");
-        System.out.println("| Version: 1.2                                                                                                    |");
+        System.out.println("| Version: 1.3                                                                                                    |");
         System.out.println("| Youtube Tutorial: "+PURPLE+"https://www.youtube.com/watch?v=J_RNlLS4k3w"+LIGHT_BLUE+"                                                   |");
         System.out.println("| Discord Server: " + PURPLE + "https://discord.gg/ExGSqUT6qk" + LIGHT_BLUE + "                                                                   |");
         System.out.println("|                                                                                                                 |");
@@ -478,6 +481,11 @@ public class Main {
 
             if(futurePackFormat == 46){
                 refactorPF5ToPF46(false);
+
+                Path offHandPath = Paths.get(destinationFolder,"assets","minecraft","textures","gui","sprites","hud");
+                File hotbarFile = offHandPath.resolve("hotbar.png").toFile();
+
+                OffHandCreator(hotbarFile, offHandPath);
             }else{
                 Path oldPathBase = Paths.get(oldTpPath, "assets","minecraft","textures","gui");
                 Path newPathBase = Paths.get(destinationFolder,"assets","minecraft","textures","gui");
@@ -947,6 +955,66 @@ public class Main {
             printWorkedShit("Netherite Item created!");
         } catch (IOException ex) {
         }
+    }
+    public static void OffHandCreator(File hotbarImageFile, Path safeFile) {
+        int toCutFromHotbar = 11;
+        int verticalSpacingUnits = 1;
+
+        try {
+            BufferedImage hotbarImage = ImageIO.read(hotbarImageFile);
+
+            int height = hotbarImage.getHeight();
+            int multiplier = height / 22; //22 is smallest hotbar height
+
+            int scaledCutWidth = toCutFromHotbar * multiplier;
+            int spacing = verticalSpacingUnits * multiplier;
+
+            BufferedImage leftCut = hotbarImage.getSubimage(0, 0, scaledCutWidth, height);
+
+            BufferedImage rightCut = hotbarImage.getSubimage(
+                    hotbarImage.getWidth() - scaledCutWidth, 0, scaledCutWidth, height);
+
+            int horizontalSpacing = 7 *multiplier;
+            int newWidth = (scaledCutWidth * 2) + horizontalSpacing;
+
+            int newHeight = height + (2 * spacing);
+
+            BufferedImage result = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = result.createGraphics();
+
+            g.drawImage(leftCut, 0, spacing, null);
+
+            g.drawImage(rightCut, scaledCutWidth, spacing, null);
+
+            g.dispose();
+            File output = safeFile.resolve("hotbar_offhand_left.png").toFile();
+            ImageIO.write(result, "png", output);
+            printWorkedShit("Created hotbar_offhand_left");
+
+            BufferedImage flipped = horizontalFlip(result);
+            File flippedOutput = safeFile.resolve("hotbar_offhand_right.png").toFile();
+            ImageIO.write(flipped, "png", flippedOutput);
+            printWorkedShit("Created hotbar_offhand_right");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Image processing failed.");
+        }
+    }
+
+    private static BufferedImage horizontalFlip(BufferedImage img) {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        BufferedImage flipped = new BufferedImage(w, h, img.getType());
+        Graphics2D g = flipped.createGraphics();
+
+        AffineTransform transform = AffineTransform.getScaleInstance(-1, 1);
+        transform.translate(-w, 0);
+
+        g.drawImage(img, transform, null);
+        g.dispose();
+        return flipped;
     }
 
     private static void printWorkedShit(String text){
