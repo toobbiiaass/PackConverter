@@ -113,7 +113,7 @@ public class Main {
         System.out.println("|                                             Minecraft Pack Converter                                            |");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------|");
         System.out.println("| BY:" + PURPLE + " vuacy" + LIGHT_BLUE + "                                                                                                       |");
-        System.out.println("| Version: 1.3                                                                                                    |");
+        System.out.println("| Version: 1.4                                                                                                    |");
         System.out.println("| Youtube Tutorial: "+PURPLE+"https://www.youtube.com/watch?v=J_RNlLS4k3w"+LIGHT_BLUE+"                                                   |");
         System.out.println("| Discord Server: " + PURPLE + "https://discord.gg/ExGSqUT6qk" + LIGHT_BLUE + "                                                                   |");
         System.out.println("|                                                                                                                 |");
@@ -563,33 +563,42 @@ public class Main {
         createNetheriteItem(Paths.get(String.valueOf(armorPath),"diamond_layer_2.png").toFile(), Paths.get(String.valueOf(armorPath),"netherite_layer_2.png").toFile());
     }
 
-    private static void refactorPF5ToPF46(boolean isNewerVersion){
+    private static void refactorPF5ToPF46(boolean isNewerVersion) {
         ArrayList<ArrayList<Item>> oldFullList = getOnePackFormatHigherVersion("packformat5.json");
         ArrayList<ArrayList<Item>> newFullList = getOnePackFormatHigherVersion("packformat46.json");
 
         for (int i = 0; i < oldFullList.size(); i++) {
-            if(i == 0 || i ==3){
-                Path iconsPath = getPathOfItem(oldTpPath,oldFullList.get(i).get(0));
-                if(isNewerVersion){
-                    iconsPath = getPathOfItem(destinationFolder,oldFullList.get(i).get(0));
+            if (i == 0 || i == 3) {
+                Path iconsPath = getPathOfItem(oldTpPath, oldFullList.get(i).get(0));
+                if (isNewerVersion) {
+                    iconsPath = getPathOfItem(destinationFolder, oldFullList.get(i).get(0));
                 }
-                File iconsImage = new File(Paths.get(String.valueOf(iconsPath),oldFullList.get(i).get(0).getName()).toUri());
-                if(iconsImage.exists()){
-                    objcutterIconsAndWidgets(newFullList.get(i),iconsImage,256);
-                }else{
-                    System.err.println("Widgets doesnt exist!");
+                File iconsImage = new File(Paths.get(String.valueOf(iconsPath), oldFullList.get(i).get(0).getName()).toUri());
+                if (iconsImage.exists()) {
+                    objcutterIconsAndWidgets(newFullList.get(i), iconsImage, 256);
+                } else {
+                    System.err.println("Widgets doesn't exist!");
                 }
-            }else{
+            } else {
                 for (int j = 0; j < oldFullList.get(i).size(); j++) {
-                    Path oldPathBase = getPathOfItem(destinationFolder,oldFullList.get(i).get(j));
-                    Path newPathBase = getPathOfItem(destinationFolder,newFullList.get(i).get(j));
-                    File oldItem = new File(Paths.get(String.valueOf(oldPathBase),oldFullList.get(i).get(j).getName()).toUri());
+                    Path oldPathBase = getPathOfItem(destinationFolder, oldFullList.get(i).get(j));
+                    Path newPathBase = getPathOfItem(destinationFolder, newFullList.get(i).get(j));
+
+                    File oldItem = new File(Paths.get(String.valueOf(oldPathBase), oldFullList.get(i).get(j).getName()).toUri());
                     File newItem = new File(Paths.get(String.valueOf(newPathBase), newFullList.get(i).get(j).getName()).toUri());
-                    oldItem.renameTo(newItem);
+
+                    try {
+                        new File(newPathBase.toString()).mkdirs();
+                        Files.copy(oldItem.toPath(), newItem.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        System.err.println("Error: " + oldItem.getName());
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
+
     private static Path getPathOfItem(String pathFront, Item item){
         String[] ollPathis = item.getPath().split("/");
         Path FillPathLol = Paths.get(ollPathis[1]);
