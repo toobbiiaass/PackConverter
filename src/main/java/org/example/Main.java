@@ -50,8 +50,6 @@ public class Main {
         createBasics();
         checkPackFormatAndStartConverting(packformat);
 
-
-
         printBlues("This could take a moment...");
         //zip the new pack and remove old temp folders
         Path newFolderPath = Paths.get(oldTpPath, futurePackName);
@@ -113,7 +111,7 @@ public class Main {
         System.out.println("|                                             Minecraft Pack Converter                                            |");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------|");
         System.out.println("| BY:" + PURPLE + " vuacy" + LIGHT_BLUE + "                                                                                                       |");
-        System.out.println("| Version: 1.5                                                                                                    |");
+        System.out.println("| Version: 1.6                                                                                                    |");
         System.out.println("| Youtube Tutorial: "+PURPLE+"https://www.youtube.com/watch?v=J_RNlLS4k3w"+LIGHT_BLUE+"                                                   |");
         System.out.println("| Discord Server: " + PURPLE + "https://discord.gg/ExGSqUT6qk" + LIGHT_BLUE + "                                                                   |");
         System.out.println("|                                                                                                                 |");
@@ -562,6 +560,37 @@ public class Main {
                     File newItem = new File(Paths.get(String.valueOf(newPathBase), newFullList.get(i).get(j).getName()).toUri());
                     if (oldItem.exists()) {
                         oldItem.renameTo(newItem);
+
+                        if (newItem.getName().toLowerCase().endsWith(".png") && oldFullList.get(i).get(j).getPath().contains("/items")) { //only items
+                            try {
+                                BufferedImage image = ImageIO.read(newItem);
+                                int width = image.getWidth();
+                                int height = image.getHeight();
+                                for (int y = 0; y < height; y++) {
+                                    for (int x = 0; x < width; x++) {
+                                        int rgba = image.getRGB(x, y);
+                                        int alpha = (rgba >> 24) & 0xff;
+                                        int red = (rgba >> 16) & 0xff;
+                                        int green = (rgba >> 8) & 0xff;
+                                        int blue = rgba & 0xff;
+
+                                        boolean isLowAlpha = alpha <= 50;
+
+                                        if (isLowAlpha) {
+                                            image.setRGB(x, y, 0x00000000);
+                                        }
+                                    }
+                                }
+
+                                // Überschreibe das Bild
+                                ImageIO.write(image, "png", newItem);
+
+                            } catch (IOException e) {
+                                System.err.println("Error image: " + newItem.getName());
+                                e.printStackTrace();
+                            }
+                        }else{
+                        }
                     }
                     //MCMETA DATEI WENN VORHANDEN
                     File oldItemMeta = new File(Paths.get(String.valueOf(newPathBase), oldFullList.get(i).get(j).getName()+".mcmeta").toUri());
