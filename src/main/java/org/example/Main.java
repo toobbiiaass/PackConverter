@@ -113,7 +113,7 @@ public class Main {
         System.out.println("|                                             Minecraft Pack Converter                                            |");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------|");
         System.out.println("| BY:" + PURPLE + " vuacy" + LIGHT_BLUE + "                                                                                                       |");
-        System.out.println("| Version: 1.4                                                                                                    |");
+        System.out.println("| Version: 1.5                                                                                                    |");
         System.out.println("| Youtube Tutorial: "+PURPLE+"https://www.youtube.com/watch?v=J_RNlLS4k3w"+LIGHT_BLUE+"                                                   |");
         System.out.println("| Discord Server: " + PURPLE + "https://discord.gg/ExGSqUT6qk" + LIGHT_BLUE + "                                                                   |");
         System.out.println("|                                                                                                                 |");
@@ -245,16 +245,19 @@ public class Main {
         moveDirc(new File(Paths.get(String.valueOf(oldPathBase),"textures","models","armor").toUri()),new File(Paths.get(String.valueOf(newPathBase),"textures","models","armor").toUri()));
         System.out.println("Do you want your Sky for optifine or fabric? (o/f)");
         String input = scanner.nextLine();
+
         if(input.equals("f")){
             moveDirc(new File(Paths.get(String.valueOf(oldPathBase),"mcpatcher").toUri()),new File(Paths.get(String.valueOf(newPathBase),"fabricskyboxes").toUri()));
-
         }else{
             moveDirc(new File(Paths.get(String.valueOf(oldPathBase),"mcpatcher").toUri()),new File(Paths.get(String.valueOf(newPathBase),"optifine").toUri()));
-
         }
+
         moveDirc(new File(Paths.get(String.valueOf(oldPathBase),"textures","blocks").toUri()),new File(Paths.get(String.valueOf(newPathBase),"textures","block").toUri()));
         moveDirc(new File(Paths.get(String.valueOf(oldPathBase),"textures","items").toUri()),new File(Paths.get(String.valueOf(newPathBase),"textures","item").toUri()));
 
+        //move entity folder
+        printBlues("copy entity folder");
+        ensureAndCopyDirectoryContents(new File(Paths.get(String.valueOf(oldPathBase),"textures","entity").toUri()),new File(Paths.get(String.valueOf(newPathBase),"textures","entity").toUri()));
         Path targetFolder = Paths.get(destinationFolder,"assets", "minecraft", "textures", "block");
 
         copyFire("fire_0.png.mcmeta", targetFolder);
@@ -286,6 +289,33 @@ public class Main {
             System.err.println(oldPath+" dont exist");
         }
     }
+
+    private static void ensureAndCopyDirectoryContents(File oldPath, File newPath) {
+        if (oldPath.exists() && oldPath.isDirectory()) {
+            if (!newPath.exists()) {
+                newPath.mkdirs();
+            }
+
+            File[] files = oldPath.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    Path targetPath = new File(newPath, file.getName()).toPath();
+                    try {
+                        if (file.isDirectory()) {
+                            ensureAndCopyDirectoryContents(file, targetPath.toFile());
+                        } else {
+                            Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        }
+                    } catch (IOException e) {
+                        System.err.println("Error copying " + file.getName() + ": " + e.getMessage());
+                    }
+                }
+            }
+        } else {
+            System.err.println("Source directory does not exist: " + oldPath);
+        }
+    }
+
     private static void createPackMcMeta(){
         Path packMCMetaPath = Paths.get(destinationFolder, "pack.mcmeta");
         File packMCMeta = new File(packMCMetaPath.toUri());
@@ -474,8 +504,6 @@ public class Main {
             //1.8
             createAllFolders();
             moveDircs();
-
-
             refactorPF1ToPF5();
             createAllNetheriteItems();
 
