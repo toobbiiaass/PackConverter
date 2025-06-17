@@ -111,7 +111,7 @@ public class Main {
         System.out.println("|                                             Minecraft Pack Converter                                            |");
         System.out.println("|-----------------------------------------------------------------------------------------------------------------|");
         System.out.println("| BY:" + PURPLE + " vuacy" + LIGHT_BLUE + "                                                                                                       |");
-        System.out.println("| Version: 1.6                                                                                                    |");
+        System.out.println("| Version: 1.7                                                                                                    |");
         System.out.println("| Youtube Tutorial: "+PURPLE+"https://www.youtube.com/watch?v=J_RNlLS4k3w"+LIGHT_BLUE+"                                                   |");
         System.out.println("| Discord Server: " + PURPLE + "https://discord.gg/ExGSqUT6qk" + LIGHT_BLUE + "                                                                   |");
         System.out.println("|                                                                                                                 |");
@@ -1030,19 +1030,17 @@ public class Main {
             BufferedImage hotbarImage = ImageIO.read(hotbarImageFile);
 
             int height = hotbarImage.getHeight();
-            int multiplier = height / 22; //22 is smallest hotbar height
+            int multiplier = height / 22;
 
             int scaledCutWidth = toCutFromHotbar * multiplier;
             int spacing = verticalSpacingUnits * multiplier;
+            int horizontalSpacing = 7 * multiplier;
 
             BufferedImage leftCut = hotbarImage.getSubimage(0, 0, scaledCutWidth, height);
 
-            BufferedImage rightCut = hotbarImage.getSubimage(
-                    hotbarImage.getWidth() - scaledCutWidth, 0, scaledCutWidth, height);
+            BufferedImage mirroredLeftCut = horizontalFlip(leftCut);
 
-            int horizontalSpacing = 7 *multiplier;
             int newWidth = (scaledCutWidth * 2) + horizontalSpacing;
-
             int newHeight = height + (2 * spacing);
 
             BufferedImage result = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
@@ -1050,9 +1048,10 @@ public class Main {
 
             g.drawImage(leftCut, 0, spacing, null);
 
-            g.drawImage(rightCut, scaledCutWidth, spacing, null);
+            g.drawImage(mirroredLeftCut, scaledCutWidth, spacing, null);
 
             g.dispose();
+
             File output = safeFile.resolve("hotbar_offhand_left.png").toFile();
             ImageIO.write(result, "png", output);
             printWorkedShit("Created hotbar_offhand_left");
@@ -1062,26 +1061,26 @@ public class Main {
             ImageIO.write(flipped, "png", flippedOutput);
             printWorkedShit("Created hotbar_offhand_right");
 
-
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Image processing failed.");
         }
     }
 
-    private static BufferedImage horizontalFlip(BufferedImage img) {
-        int w = img.getWidth();
-        int h = img.getHeight();
-        BufferedImage flipped = new BufferedImage(w, h, img.getType());
+    private static BufferedImage horizontalFlip(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        BufferedImage flipped = new BufferedImage(width, height, image.getType());
         Graphics2D g = flipped.createGraphics();
 
         AffineTransform transform = AffineTransform.getScaleInstance(-1, 1);
-        transform.translate(-w, 0);
+        transform.translate(-width, 0);
+        g.drawImage(image, transform, null);
 
-        g.drawImage(img, transform, null);
         g.dispose();
         return flipped;
     }
+
 
     private static void printWorkedShit(String text){
         System.out.println(GREEN+text+RESET);
